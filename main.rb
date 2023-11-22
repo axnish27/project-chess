@@ -18,6 +18,7 @@ end
 
 class Peice
 
+
   def in_board?(position)
     #use between
     return true if position[0].between?(0,7) && position[1].between?(0,7)
@@ -28,9 +29,13 @@ end
 
 class Rook < Peice
 
-  def initialize(position)
-    @current_position = [3,4]
+  @@name = "rook"
 
+  def initialize(player)
+
+    @current_position = [4,3]
+    @end_position = [1,3]
+    @player = player
   end
 
   def check_valid(end_position)
@@ -42,6 +47,12 @@ class Rook < Peice
 
   def available_moves()
 
+    up
+    down
+    left
+    right
+    
+
 
   end
 
@@ -49,6 +60,49 @@ class Rook < Peice
 
   end
 
+  def up()
+
+    index = @current_position.dup
+
+    until index[0] == 0
+       index[0] = index[0] - 1
+      p index
+    end
+
+
+  end
+
+  def down()
+    index = @current_position.dup
+
+    until index[0] == 7
+       index[0] = index[0] + 1
+      p index
+    end
+
+  end
+
+
+  def left()
+
+    index = @current_position.dup
+
+    until index[1] == 0
+       index[1] = index[1] - 1
+      p index
+    end
+
+  end
+
+
+  def right()
+    index = @current_position.dup
+    until index[1] == 7
+       index[1] = index[1] + 1
+      p index
+    end
+
+  end
 
   def move(end_position)
 
@@ -156,3 +210,7 @@ end
 
 game = Game.new
 game.move("a1","a2")
+
+
+rook = Rook.new()
+rook.available_moves
