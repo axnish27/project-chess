@@ -1,122 +1,14 @@
 class Square
 
-  attr_accessor :peice,:name
+  attr_accessor :peice,:name ,:co_ordinate
 
-  def initialize(name)
+  def initialize(name,co_ordinate)
     @name = name
     @peice = nil
-  end
-
-
-end
-
-
-
-#array to algebric Notation hash
-
-
-
-class Peice
-
-
-  def in_board?(position)
-    #use between
-    return true if position[0].between?(0,7) && position[1].between?(0,7)
+    @co_ordinate = co_ordinate
   end
 
 end
-
-
-class Rook < Peice
-
-  @@name = "rook"
-
-  def initialize(player)
-
-    @current_position = [4,3]
-    @end_position = [1,3]
-    @player = player
-  end
-
-  def check_valid(end_position)
-
-    return "invalid move" if end_position[1] != @current_position[1]
-    return "invalid move" if end_position[0] != @current_position[0]
-
-  end
-
-  def available_moves()
-
-    up
-    down
-    left
-    right
-    
-
-
-  end
-
-  def cut_peice()
-
-  end
-
-  def up()
-
-    index = @current_position.dup
-
-    until index[0] == 0
-       index[0] = index[0] - 1
-      p index
-    end
-
-
-  end
-
-  def down()
-    index = @current_position.dup
-
-    until index[0] == 7
-       index[0] = index[0] + 1
-      p index
-    end
-
-  end
-
-
-  def left()
-
-    index = @current_position.dup
-
-    until index[1] == 0
-       index[1] = index[1] - 1
-      p index
-    end
-
-  end
-
-
-  def right()
-    index = @current_position.dup
-    until index[1] == 7
-       index[1] = index[1] + 1
-      p index
-    end
-
-  end
-
-  def move(end_position)
-
-    @current_position = end_position
-
-  end
-
-end
-
-
-
-
-
-
 
 
 class Board
@@ -133,13 +25,16 @@ class Board
     board = []
     # puts "         White"
     letters = ["a","b","c","d","e","f","g","h"]
-    for i in 1..8
+    for i in -7..0
       row = []
+      x = 0
       letters.each do |letter|
-        name = "#{letter}#{i}"
+        name = "#{letter}#{i+8}"
+        co_ordinate = [i+7,x]
+        x += 1
         #print name," "
-        name = Square.new(name)
-        row << name
+        square = Square.new(name,co_ordinate)
+        row << square
       end
       board << row
 
@@ -147,8 +42,10 @@ class Board
     end
     # puts "         Black"
     create_hash(board)
-    #p board
+    board
   end
+
+
 
 
   def create_hash(array_of_objects)
@@ -162,46 +59,228 @@ class Board
 
 end
 
+
+
+#array to algebric Notation hash
+
+
+
+class Peice
+
+
+
+
+end
+
+
+class Rook < Peice
+
+  attr_accessor :player , :name , :current_position , :destination , :can_be_captured
+
+  def initialize(player)
+
+    @name = "rook"
+    @player = player
+    @current_position = nil
+    @destination = nil
+    @available_moves = []
+    @can_be_captured = []
+
+  end
+
+
+
+  def available_moves(play_board)
+    @play_board = play_board
+    up()
+    down()
+    left()
+    right()
+    @available_moves
+
+
+
+  end
+
+
+  def up()
+
+    index = @current_position.dup
+    square = nil
+
+    while true
+
+      index[0] = index[0] + 1
+      square = return_square(index)
+      @available_moves << square.name
+
+      return false if break_check?(square,index[0],7)
+
+    end
+
+  end
+
+  def down()
+    index = @current_position.dup
+    square = nil
+
+    while true
+      index[0] = index[0] - 1
+      square = return_square(index)
+      @available_moves << square.name
+
+      break if break_check?(square,index[0],0)
+    end
+
+  end
+
+  def left()
+
+    index = @current_position.dup
+    square = nil
+
+    while true
+      index[1] = index[1] - 1
+      square = return_square(index)
+      @available_moves << square.name
+
+      return false if break_check?(square,index[1],0)
+    end
+
+  end
+
+
+  def right()
+    index = @current_position.dup
+    square = nil
+    while true
+      index[1] = index[1] + 1
+      square = return_square(index)
+
+      @available_moves << square.name
+
+      return false if break_check?(square,index[1],7)
+    end
+
+  end
+
+  def break_check?(square,index,stop)
+    if square.peice.nil? == false && !our_peice?(square.peice)
+      @can_be_captured << square.name
+      return true
+
+    elsif index == stop
+        return true
+    end
+    return false
+  end
+
+
+
+  def our_peice?(peice)
+    peice.player == @player ? true : false
+  end
+
+
+
+  def return_square(index)
+
+    square = @play_board[index[0]][index[1]]
+    square
+
+  end
+
+  def check_valid()
+
+    return false if @destination[1] != @current_position[1] || @destination[0] != @current_position[0]
+
+  end
+
+end
+
+
+
+
 class Game
 
   def initialize
     @board = Board.new()
     @play_board = @board.board
-    @find_hash = @board.hash
+    @find_co_ordinates = @board.hash
+    @captured_peices = []
+
+    delete_this()
+
 
 
 
   end
-  def move(start,destination)
 
+  def move_peice(start,destination)
 
-    return p "invalid move" if vaid_move?(start) == false && vaid_move?(destination) == false
+    return p "invalid move" if !in_board?(start) || !in_board?(destination)
 
-    start = return_square(start)
-    destination = return_square(destination)
+    start_square = return_square(start)
+    destination_square = return_square(destination)
 
+    peice = start_square.peice
+    peice.current_position = @find_co_ordinates[start]
+    peice.destination = @find_co_ordinates[destination]
 
-    destination.peice = start.peice if destination.peice.nil?
+    return puts"invalid move for the peice" if !peice.check_valid
 
-    p return_square("a2")
+    available_moves = peice.available_moves(@play_board)
+
+    return puts"invalid move for the peice" if !available_moves.include?(destination)
+
+    @captured_peices << destination_square.peice if peice.can_be_captured.include?(destination)
+
+    destination_square.peice = peice
+    start_square.peice = nil
+
   end
 
+
+  def capture_peice
+
+
+  end
 
   def return_square(square)
 
-    index = @find_hash[square]
+    index = @find_co_ordinates[square]
     square = @play_board[index[0]][index[1]]
 
   end
 
-  def vaid_move?(cordinate)
+
+
+
+  def delete_this()
+
+    square1 = @play_board[3][3]
+    square2 = @play_board[6][3]
+    rookbish = Rook.new("player1")
+    square1.peice = rookbish
+
+    rookbish1 = Rook.new("player2")
+    square2.peice = rookbish1
+
+  end
+
+
+
+
+
+  def in_board?(co_ordinate)
 
     begin
-      index = cordinate.split("")
+      index = co_ordinate.split("")
       return true if index.length == 2 && index[1].to_i.between?(1,7) && index[0] in "a".."h"
     rescue NoMethodError
       return false
     end
+    false
 
   end
 
@@ -209,8 +288,6 @@ end
 
 
 game = Game.new
-game.move("a1","a2")
 
 
-rook = Rook.new()
-rook.available_moves
+game.move_peice("d4","d7")
