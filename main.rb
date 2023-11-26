@@ -1,7 +1,5 @@
 require_relative 'lib/peice'
 
-
-
 class Square
 
   attr_accessor :peice,:name ,:co_ordinate
@@ -64,12 +62,6 @@ class Board
 end
 
 
-
-
-
-
-
-
 class Game
 
   def initialize
@@ -98,8 +90,8 @@ class Game
     peice.destination = @find_co_ordinates[destination]
     peice.board = @play_board
 
-
-    return puts"invalid move for the peice" if peice.check_valid? == false
+    #checks if destination is possible
+    return puts"invalid move for the peice check" if !peice.check_valid?
 
     available_moves = peice.available_moves()
 
@@ -110,6 +102,7 @@ class Game
 
     destination_square.peice = peice
     start_square.peice = nil
+
 
   end
 
@@ -127,20 +120,18 @@ class Game
   end
 
 
-
-
   def delete_this()
 
-    square1 = @play_board[3][3]
-    square2 = @play_board[4][3]
-    square3 = @play_board[5][3]
-    knightbish = Rook.new("player1")
+    square1 = @play_board[4][3]
+    square2 = @play_board[6][1]
+    square3 = @play_board[7][0]
+    knightbish = Queen.new("player1")
     square1.peice = knightbish
 
-    knightbish1 = Rook.new("player2")
+    knightbish1 = Bishop.new("player2")
     square2.peice = knightbish1
 
-    knightbish1 = Rook.new("player1")
+    knightbish1 = Bishop.new("player1")
     square3.peice = knightbish1
 
   end
@@ -165,14 +156,20 @@ end
 
 
 game = Game.new
-game.move_peice("d4","d7")
+game.move_peice("d5","f7")
 
 
 # board = Board.new()
 # b = board.board
-# knight = Knight.new("player1")
-# knight.current_position = [0,0]
-# knight.destination = [2,1]
-# knight.board = b
-# p knight.check_valid?
-# knight.available_moves
+# bishop = Bishop.new("player1")
+# bishop.current_position = [4,3]
+# bishop.destination = [2,1]
+# bishop.board = b
+# bishop.up
+# bishop.down
+# bishop.left
+# bishop.right
+# bishop.check_valid?
+# p bishop.available_moves
+
+
