@@ -1,5 +1,4 @@
-
-require './peice'
+require_relative 'lib/peice'
 
 
 
