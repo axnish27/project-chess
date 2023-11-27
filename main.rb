@@ -93,12 +93,11 @@ class Game
     #checks if destination is possible
     return puts"invalid move for the peice check" if !peice.check_valid?
 
-    available_moves = peice.available_moves()
-
+    available_moves = peice.available_moves.flatten.uniq
 
     return puts"invalid move for the peice" if !available_moves.include?(destination)
 
-    @captured_peices << destination_square.peice if peice.can_be_captured.include?(destination)
+    @captured_peices << destination_square.peice if peice.can_capture.include?(destination)
 
     destination_square.peice = peice
     start_square.peice = nil
@@ -123,15 +122,15 @@ class Game
   def delete_this()
 
     square1 = @play_board[4][3]
-    square2 = @play_board[6][1]
-    square3 = @play_board[7][0]
-    knightbish = Queen.new("player1")
+    square2 = @play_board[5][3]
+    square3 = @play_board[5][4]
+    knightbish = King.new("player1")
     square1.peice = knightbish
 
-    knightbish1 = Bishop.new("player2")
+    knightbish1 = Bishop.new("player1")
     square2.peice = knightbish1
 
-    knightbish1 = Bishop.new("player1")
+    knightbish1 = Bishop.new("player2")
     square3.peice = knightbish1
 
   end
@@ -156,20 +155,20 @@ end
 
 
 game = Game.new
-game.move_peice("d5","f7")
+game.move_peice("d5","e6")
 
 
 # board = Board.new()
 # b = board.board
-# bishop = Bishop.new("player1")
+# bishop = King.new("player1")
 # bishop.current_position = [4,3]
 # bishop.destination = [2,1]
 # bishop.board = b
-# bishop.up
-# bishop.down
-# bishop.left
-# bishop.right
-# bishop.check_valid?
+# bishop.create_moves
+# # bishop.down
+# # bishop.left
+# # bishop.right
+# # bishop.check_valid?
 # p bishop.available_moves
 
 
