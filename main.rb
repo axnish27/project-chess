@@ -62,6 +62,26 @@ class Board
 end
 
 
+
+
+
+
+
+class Player
+
+def initialize
+
+end
+
+
+end
+
+
+
+
+
+
+
 class Game
 
   def initialize
@@ -93,7 +113,7 @@ class Game
     #checks if destination is possible
     return puts"invalid move for the peice check" if !peice.check_valid?
 
-    available_moves = peice.available_moves.flatten.uniq
+    p available_moves = peice.available_moves.flatten.uniq
 
     return puts"invalid move for the peice" if !available_moves.include?(destination)
 
@@ -121,10 +141,10 @@ class Game
 
   def delete_this()
 
-    square1 = @play_board[4][3]
-    square2 = @play_board[5][3]
-    square3 = @play_board[5][4]
-    knightbish = King.new("player1")
+    square1 = @play_board[0][0] #a1
+    square2 = @play_board[5][5] #b1
+    square3 = @play_board[2][2] #b2
+    knightbish = Queen.new("player1")
     square1.peice = knightbish
 
     knightbish1 = Bishop.new("player1")
@@ -155,7 +175,7 @@ end
 
 
 game = Game.new
-game.move_peice("d5","e6")
+game.move_peice("a1","e5")
 
 
 # board = Board.new()

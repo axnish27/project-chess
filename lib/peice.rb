@@ -1,12 +1,14 @@
 class Peice
 
-  attr_accessor :player , :current_position , :destination , :can_capture, :board, :available_moves
+  attr_accessor :player , :current_position , :destination , :can_capture, :board, :available_moves ,:name , :possible_moves
 
   def initialize(player)
 
+    @name = nil
     @player = player
     @current_position = nil
     @destination = nil
+    @possible_moves = []
     @available_moves = []
     @can_capture = []
     @board = nil
@@ -32,55 +34,38 @@ class Peice
     end
   end
 
+  def check_valid?()
+    all_moves()
+
+    @possible_moves.each do |square|
+      return true if square.co_ordinate == @destination
+    end
+    return false
+  end
 
 end
 
 
 class Rook < Peice
 
-  attr_accessor :name
-
   def initialize(player)
-
-    @name = "rook"
     super
-
+    @name = "Rook"
   end
-
-
-
-  def available_moves
-    up()
-    down()
-    left()
-    right()
-    @available_moves + @can_capture
-
-
-
-  end
-
 
   def up()
-
     index = @current_position.dup
     square = nil
 
     while true
-
       index[0] = index[0] + 1
       begin
         square = return_square(index)
       rescue NoMethodError
         return false
       end
-
-
-
       return false if break_if?(square,index[0],8)
       @available_moves << square.name
-
-
     end
 
   end
@@ -91,13 +76,11 @@ class Rook < Peice
 
     while true
       index[0] = index[0] - 1
-
       begin
         square = return_square(index)
       rescue NoMethodError
         return false
       end
-
       break if break_if?(square,index[0],-1)
       @available_moves << square.name
     end
@@ -126,15 +109,14 @@ class Rook < Peice
   def right()
     index = @current_position.dup
     square = nil
+
     while true
       index[1] = index[1] + 1
-
       begin
         square = return_square(index)
       rescue NoMethodError
         return false
       end
-
       return false if break_if?(square,index[1],8)
       @available_moves << square.name
     end
@@ -144,29 +126,32 @@ class Rook < Peice
   def break_if?(square,index,stop)
 
     begin
-    if !square.peice.nil?
-      if !our_peice?(square.peice)
-        @can_capture << square.name
+      if !square.peice.nil?
+        if !our_peice?(square.peice)
+          @can_capture << square.name
+        end
+        return true
+      elsif index == stop
+        return true
       end
-      return true
-    elsif index == stop
-      return true
-
-    end
     rescue NoMethodError
       return true
     else
       return false
     end
 
-
   end
 
-
-
-
+  def all_moves()
+    up()
+    down()
+    left()
+    right()
+    @available_moves + @can_capture
+  end
 
   def check_valid?()
+    all_moves()
     #returns true or false
     @destination[1] != @current_position[1] && @destination[0] == @current_position[0] || @destination[1] == @current_position[1] && @destination[0] != @current_position[0] ? true : false
 
@@ -177,28 +162,14 @@ end
 
 class Knight < Peice
 
-  attr_accessor :name
-
   def initialize(player)
-
-    @name = "knight"
-    @possible_moves = []
     super
+    @name = "knight"
 
   end
-
-
-
-  def possible_moves()
-    verticle_move("-")
-    verticle_move("+")
-    horizonatal_move("-")
-    horizonatal_move("+")
-  end
-
-
 
 def verticle_move(up_or_down)
+
   index = @current_position.dup
   center = num_between(up_or_down == "-" ? index[0] - 2 : index[0] + 2)
 
@@ -219,32 +190,39 @@ def verticle_move(up_or_down)
 end
 
   def horizonatal_move(up_or_down)
-      index = @current_position.dup
 
-      center =  num_between(up_or_down == "-" ? index[1] - 2 : index[1] + 2)
+    index = @current_position.dup
+    center =  num_between(up_or_down == "-" ? index[1] - 2 : index[1] + 2)
 
-      if !center.nil?
+    if !center.nil?
 
-        left = num_between(index[0] + 1)
-        if !left.nil?
-          move_down = return_square([left,center])
-          @possible_moves << move_down
-        end
-
-        right = num_between(index[0] - 1)
-        if !right.nil?
-          move_up = return_square([right,center])
-          @possible_moves << move_up
-        end
-
+      left = num_between(index[0] + 1)
+      if !left.nil?
+        move_down = return_square([left,center])
+        @possible_moves << move_down
       end
+
+      right = num_between(index[0] - 1)
+      if !right.nil?
+        move_up = return_square([right,center])
+        @possible_moves << move_up
+      end
+
+    end
 
 
   end
 
+  def all_moves()
+    verticle_move("-")
+    verticle_move("+")
+    horizonatal_move("-")
+    horizonatal_move("+")
+    create_moves()
+  end
 
+  def create_moves()
 
-  def available_moves()
     moves = @possible_moves.dup
     moves.each do |square|
       if square.peice.nil?
@@ -254,34 +232,22 @@ end
         @can_capture << square.name
       end
     end
-
-
-  end
-
-  def check_valid?
-
-    possible_moves()
-
-    @possible_moves.each do |square|
-      return square.co_ordinate == @destination ? true : false
-    end
   end
 
 end
 
 class Bishop < Peice
-  attr_accessor :name
+
 
   def initialize(player)
-    @name = "Bishop"
-    @possible_moves = []
     super
+    @name = "Bishop"
+
   end
 
   def up
     index = @current_position.dup
     square = nil
-
 
     while true
       break if index[0] == 7
@@ -289,62 +255,58 @@ class Bishop < Peice
 
       square = return_square(index)
       @possible_moves << square
-    end
 
+    end
   end
 
   def down
     index = @current_position.dup
     square = nil
 
-
     while true
       break if index[1] == 0
       index = index.map{|index| index - 1}
       square = return_square(index)
       @possible_moves << square
-    end
 
+      p square.co_ordinate
+    end
   end
 
-  def left
+  def left()
     index = @current_position.dup
     square = nil
 
-
     while true
-
-      break if index[0] == 7
-
+      break if index[1] == 0
       index[0] = index[0] + 1
       index[1] = index[1] - 1
       square = return_square(index)
       @possible_moves << square
-    end
 
+      p square.co_ordinate
+    end
   end
 
 
-
-
-  def right
+  def right()
     index = @current_position.dup
     square = nil
 
-
     while true
-
       break if index[0] == 0
       index[1] = index[1] + 1
       index[0] = index[0] - 1
       square = return_square(index)
       @possible_moves << square
-    end
 
+      p square.co_ordinate
+    end
   end
 
-  def available_moves()
+  def create_moves()
     moves = @possible_moves.dup
+
     moves.each do |square|
       if square.peice.nil?
         @available_moves << square.name
@@ -353,35 +315,25 @@ class Bishop < Peice
         @can_capture << square.name
       end
     end
-    @available_moves
   end
 
-  def possible_moves()
+  def all_moves()
     up()
     down()
     left()
     right()
+    create_moves()
   end
-
-  def check_valid?
-    possible_moves()
-
-    @possible_moves.each do |square|
-      return true if square.co_ordinate == @destination
-    end
-    return false
-  end
-
 
 end
 
 
 class Queen < Peice
 
-  attr_accessor :available_moves
   def initialize(player)
-    @name = "Queen"
     super
+    @name = "Queen"
+
   end
 
   def create_moves()
@@ -393,15 +345,16 @@ class Queen < Peice
     @bishop.check_valid?
 
     @available_moves << @bishop.available_moves
-    @can_capture << @bishop.can_be_captured
+    @can_capture << @bishop.can_capture
 
     @rook = Rook.new(@player)
     @rook.current_position = @current_position
     @rook.destination = @destination
     @rook.board = @board
+    @rook.check_valid?
 
     @available_moves << @rook.available_moves
-    @can_capture << @rook.can_be_captured
+    @can_capture << @rook.can_capture
 
     @available_moves = @available_moves.flatten
     @can_capture = @can_capture.flatten
@@ -413,7 +366,6 @@ class Queen < Peice
     create_moves()
     return true if @bishop.check_valid? || @rook.check_valid?
     false
-
   end
 
 end
@@ -423,9 +375,9 @@ class Pawn < Peice
 
 
   def initialize(player)
-    @name = "Pawn"
-    @possible_moves = []
     super
+    @name = "Pawn"
+
   end
 
 
@@ -435,17 +387,18 @@ class Pawn < Peice
     square = nil
 
     if index[1] == 1
-      index[0] = index[0] + 1
-      square = return_square(index)
-      @available_moves << square.name
-      @possible_moves << square
-    else
       2.times do
         index[0] = index[0] + 1
         square = return_square(index)
         @available_moves << square.name
         @possible_moves << square
       end
+    else
+      index[0] = index[0] + 1
+      square = return_square(index)
+      @available_moves << square.name
+      @possible_moves << square
+
     end
 
   end
@@ -473,23 +426,9 @@ class Pawn < Peice
   end
 
   def all_moves()
-
     create_moves()
     can_be_captured()
-
     @available_moves << @can_capture
-
-
-  end
-
-
-  def check_valid?
-
-    all_moves()
-    @possible_moves.each do |square|
-      return true if square.co_ordinate == @destination
-    end
-    return false
   end
 
 end
@@ -497,9 +436,9 @@ end
 class King < Peice
 
   def initialize(player)
-    @name = "King"
-    @possible_moves = []
     super
+    @name = "King"
+
 
   end
 
@@ -540,16 +479,5 @@ class King < Peice
     @available_moves << @can_capture
 
   end
-
-  def check_valid?
-    all_moves()
-
-    @possible_moves.each do |square|
-      return true if square.co_ordinate == @destination
-    end
-    return false
-  end
-
-
 
 end
