@@ -1,6 +1,6 @@
 class Peice
 
-  attr_accessor :player , :current_position , :destination , :can_capture, :board, :available_moves ,:name , :possible_moves
+  attr_accessor :player , :current_position , :destination , :can_capture, :board, :available_moves ,:name , :possible_moves, :color
 
   def initialize(player)
 
@@ -12,6 +12,7 @@ class Peice
     @available_moves = []
     @can_capture = []
     @board = nil
+    @color = nil
 
   end
 
@@ -227,7 +228,7 @@ end
     moves.each do |square|
       if square.peice.nil?
         @available_moves << square.name
-      elsif !our_peice?(peice)
+      elsif !our_peice?(square.peice)
         @available_moves << square.name
         @can_capture << square.name
       end
@@ -269,7 +270,6 @@ class Bishop < Peice
       square = return_square(index)
       @possible_moves << square
 
-      p square.co_ordinate
     end
   end
 
@@ -284,7 +284,6 @@ class Bishop < Peice
       square = return_square(index)
       @possible_moves << square
 
-      p square.co_ordinate
     end
   end
 
@@ -300,7 +299,6 @@ class Bishop < Peice
       square = return_square(index)
       @possible_moves << square
 
-      p square.co_ordinate
     end
   end
 
@@ -384,30 +382,30 @@ class Pawn < Peice
 
   def create_moves()
     index = @current_position.dup
-    square = nil
-
-    if index[1] == 1
+    if @color == "white" && index[1] == 1 || @color == "white" && index[1] == 7
       2.times do
-        index[0] = index[0] + 1
-        square = return_square(index)
-        @available_moves << square.name
-        @possible_moves << square
+        code()
       end
     else
-      index[0] = index[0] + 1
-      square = return_square(index)
-      @available_moves << square.name
-      @possible_moves << square
-
+      code()
     end
 
   end
 
+  def code()
+    index = @current_position.dup
+    square = nil
+    index[0] = @color == "white" ? index[0] + 1 : index[0] - 1
+    square = return_square(index)
+    @available_moves << square.name
+    @possible_moves << square
+  end
+
+
   def can_be_captured()
 
     index = @current_position.dup
-
-    left = index.map{|index| index + 1}
+    left = @color == "white" ? index.map{|index| index + 1} : index.map{|index| index - 1}
     square = return_square(left)
     if !square.peice.nil?
       @can_capture << square.name if !our_peice?(square.peice)
