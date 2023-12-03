@@ -16,8 +16,6 @@ end
 class Game
 
 
-
-
   def initialize(player1,player2)
     @board = Board.new(player1,player2)
     @play_board = @board.board
@@ -25,6 +23,8 @@ class Game
     @captured_peices = []
     @first_move = true
     @player_turn = "white"
+    @check = true
+    delete_this()
 
 
 
@@ -45,28 +45,28 @@ class Game
 
   end
 
+  def available_moves()
+    start = start.split("?")[0]
+    start_square = return_square(start)
+    peice = start_square.peice
+    peice.board = @play_board
+    peice.all_moves
+    available_moves = peice.available_moves.flatten.uniq
+    return puts available_moves
+  end
   def move_peice(start,destination=nil)
 
-
-    # @play_board.each do |array|
-    #   array.each do |object|
-    #     puts "#{object.peice.name} #{object.name} #{object.peice.color}" if !object.peice.nil?
-    #   end
-    # end
-
-    if start.include?("?") && in_board?(start.split("?")[0])
-      start = start.split("?")[0]
-      start_square = return_square(start)
-      peice = start_square.peice
-      peice.current_position = @find_co_ordinates[start]
-      peice.board = @play_board
-      peice.all_moves
-      available_moves = peice.available_moves.flatten.uniq
-      return puts available_moves
+    if destination.nil? && start.include?("?") && in_board?(start.split("?")[0])
+      return available_moves()
+    elsif !in_board?(start) || !in_board?(destination)
+      return p "invalid move"
+    elsif return_square(start).nil?
+      return puts "no peice at the square "
+    elsif @first_move && return_square(start).peice.color == "black"
+      return puts "white moves first "
     end
 
 
-    return p "invalid move" if !in_board?(start) || !in_board?(destination)
     start_square = return_square(start)
     destination_square = return_square(destination)
 
@@ -88,31 +88,63 @@ class Game
     return puts "#{@player_turn}'s moves"if peice.color != @player_turn
     return puts"invalid move for the peice check" if !peice.check_valid?
 
-    p available_moves = peice.available_moves.flatten.uniq
+    available_moves = peice.available_moves.flatten.uniq
 
     return puts"invalid move for the peice" if !available_moves.include?(destination)
 
-    puts peice.color
+    if @check == true
 
-    if peice.can_capture.include?(destination)
-      @captured_peices << destination_square.peice
-      @player_turn = peice.color
-    else
-      @player_turn = peice.color == "white" ? "black" : "white"
+      destination_square.peice = peice
+      start_square.peice = nil
+      #chek after the move is made all the opponent players can capture moves...to see if king is present if present tell to make another mve
+
+      opponent = @player_turn  == "white" ? "black" : "white"
+      opponent_peices = @play_board.flatten.find_all do |square|
+        if square.peice.nil?
+
+        else
+          square.peice.color == opponent
+        end
+
+      end
+
+
+      stil = nil
+      opponent_peices.each do |square|
+
+      peice = square.peice
+      peice.board = @play_board
+      peice.all_moves
+      if !peice.can_capture.compact.empty?
+        stil = peice.can_capture.any? {|move| move.peice.name == "King"}
+        return puts "stiil in chek" if stil
+      else
+        @check = false
+      end
     end
 
 
-    destination_square.peice = peice
-    start_square.peice = nil
+
+
+    end
+
+
+    start_square = return_square(destination_square.name)
+
+    peice = start_square.peice
+    peice.current_position = @find_co_ordinates[destination_square.name]
+    peice.board = @play_board
+
+    peice.all_moves
+    peice.can_capture
+    @check = peice.can_capture.any?{|move| move.peice.name == "King"}
+    puts "FUck check" if @check
+
+    #current postion give when initialize and when the peice is moved change teh current postion
 
 
   end
 
-
-  def capture_peice
-
-
-  end
 
   def return_square(square)
 
@@ -122,21 +154,21 @@ class Game
   end
 
 
-  # def delete_this()
+  def delete_this()
 
-  #   square1 = @play_board[0][0] #a1
-  #   square2 = @play_board[5][5] #b1
-  #   square3 = @play_board[2][2] #b2
-  #   knightbish = Queen.new("player1")
-  #   square1.peice = knightbish
+    square1 = @play_board[1][4] #e2
+    square2 = @play_board[5][4] #b1
+    square3 = @play_board[2][2] #b2
 
-  #   knightbish1 = Bishop.new("player1")
-  #   square2.peice = knightbish1
+    square1.peice = nil
 
-  #   knightbish1 = Bishop.new("player2")
-  #   square3.peice = knightbish1
+    knightbish1 = Rook.new("player2")
+    knightbish1.color = "black"
+    square2.peice = knightbish1
+    knightbish1.current_position = square2.co_ordinate
 
-  # end
+
+  end
 
 
 
@@ -153,6 +185,7 @@ class Game
     false
 
   end
+
 
 end
 
