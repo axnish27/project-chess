@@ -21,23 +21,22 @@ class Game
     @play_board = @board.board
     @find_co_ordinates = @board.hash
     @captured_peices = []
-    @first_move = true
-    @player_turn = "white"
-    @check = true
+    @first_move = false
+    @player_turn = "black"
+    @check = false
     delete_this()
 
 
 
   end
 
-
   def call_turns
-
     2.times do
       turn
-
     end
   end
+
+
 
   def turn
     input = gets.chomp.split(",")
@@ -54,95 +53,156 @@ class Game
     available_moves = peice.available_moves.flatten.uniq
     return puts available_moves
   end
-  def move_peice(start,destination=nil)
 
-    if destination.nil? && start.include?("?") && in_board?(start.split("?")[0])
-      return available_moves()
+  def check_input?(start,destination=nil)
+    if start.nil?
+      puts "Input Move"
+      return false
+    elsif destination.nil? && start.include?("?") && in_board?(start.split("?")[0])
+      puts available_moves()
+      return false
     elsif !in_board?(start) || !in_board?(destination)
-      return p "invalid move"
+      puts "invalid move"
+      return false
     elsif return_square(start).nil?
-      return puts "no peice at the square "
+      puts "no peice at the square "
+      return false
     elsif @first_move && return_square(start).peice.color == "black"
-      return puts "white moves first "
+      puts "white moves first"
+      return false
+    elsif return_square(start).peice.color != @player_turn
+      puts "#{@player_turn}'s moves"
+      return false
+    end
+    @first_move = false
+    true
+  end
+
+
+  def still_check?()
+
+
+
+    opponent = @player_turn  == "white" ? "black" : "white"
+
+    opponent_peices = @play_board.flatten.find_all do |square|
+      if !square.peice.nil?
+        square.peice.color == opponent
+      end
     end
 
+    opponent_peices.each do |square|
+      peice = square.peice
+      peice.board = @play_board
+      peice.all_moves
+      if !peice.can_capture.compact.empty?
+        stil = peice.can_capture.any? {|move| move.peice.name == "King"}
+        return stil if stil
+      end
+    end
+    return false
+  end
+
+  def is_check?(destination)
+
+    start_square = return_square(destination)
+    peice = start_square.peice
+    peice.board = @play_board
+    peice.all_moves
+    peice.can_capture
+    check = peice.can_capture.any?{|move| move.peice.name == "King"}
+    check
+
+  end
+
+  def move_peice(start,destination=nil)
+
+    # while
+    #   turn
+    # end
+    return if !check_input?(start, destination)
 
     start_square = return_square(start)
     destination_square = return_square(destination)
-
-
-    return puts "no peice at the square " if start_square.peice.nil?
     peice = start_square.peice
 
-    return puts "white moves first " if @first_move && peice.color == "black"
-    @first_move = false
 
 
-
-
-    peice.current_position = @find_co_ordinates[start]
     peice.destination = @find_co_ordinates[destination]
     peice.board = @play_board
 
-    #checks if destination is possible
-    return puts "#{@player_turn}'s moves"if peice.color != @player_turn
     return puts"invalid move for the peice check" if !peice.check_valid?
 
     available_moves = peice.available_moves.flatten.uniq
 
     return puts"invalid move for the peice" if !available_moves.include?(destination)
 
+    #find a way to put all of this
+    p "a",@check
     if @check == true
+      return puts "still in check " if simulator_check(start_square,destination_square,peice)
 
-      destination_square.peice = peice
-      start_square.peice = nil
-      #chek after the move is made all the opponent players can capture moves...to see if king is present if present tell to make another mve
+    end
 
-      opponent = @player_turn  == "white" ? "black" : "white"
-      opponent_peices = @play_board.flatten.find_all do |square|
-        if square.peice.nil?
+    destination_square.peice = peice
+    start_square.peice = nil
+    destination_square.peice.current_position = destination_square.co_ordinate
 
-        else
-          square.peice.color == opponent
+
+
+    @check = is_check?(destination_square.name)
+    p @check
+    #checking if checkmade
+    if @check
+
+      player_peices = @play_board.flatten.find_all do |square|
+        if !square.peice.nil?
+          square.peice.color == @player
         end
-
       end
 
-
-      stil = nil
-      opponent_peices.each do |square|
-
-      peice = square.peice
-      peice.board = @play_board
-      peice.all_moves
-      if !peice.can_capture.compact.empty?
-        stil = peice.can_capture.any? {|move| move.peice.name == "King"}
-        return puts "stiil in chek" if stil
-      else
-        @check = false
+      checkmate = true
+      player_peices.each do |square|
+        peice = square.peice
+        peice.board = @play_board
+        peice.all_moves.each do |destination|
+          checkmate = simulator_check(square,square,return_square(destination),peice)
+          break if !checkmate
+        end
+        puts(checkmate)
       end
-    end
-
-
-
 
     end
 
 
-    start_square = return_square(destination_square.name)
+    puts "moved"
 
-    peice = start_square.peice
-    peice.current_position = @find_co_ordinates[destination_square.name]
-    peice.board = @play_board
+    @player_turn = @player_turn  == "white" ? "black" : "white"
 
-    peice.all_moves
-    peice.can_capture
-    @check = peice.can_capture.any?{|move| move.peice.name == "King"}
-    puts "FUck check" if @check
+  end
 
-    #current postion give when initialize and when the peice is moved change teh current postion
+  def simulator_check(start_square,destination_square,peice)
+    temp = destination_square.peice
+    temp2 = start_square.peice
+    temp3 = destination_square.peice.nil? ? nil : destination_square.peice.current_position
 
+    destination_square.peice = peice
+    start_square.peice = nil
+    destination_square.peice.current_position = destination_square.co_ordinate
 
+    check = still_check?()
+
+    destination_square.peice = temp
+      start_square.peice = temp2
+      if !destination_square.peice.nil?
+        destination_square.peice.current_position = temp3
+      end
+
+    if check
+      return true
+    else
+      return false
+    end
   end
 
 
@@ -156,16 +216,32 @@ class Game
 
   def delete_this()
 
-    square1 = @play_board[1][4] #e2
-    square2 = @play_board[5][4] #b1
-    square3 = @play_board[2][2] #b2
+    # square1 = @play_board[1][4]
+    # square2 = @play_board[5][0]
+    # square3 = @play_board[2][3]
+    # square4 = @play_board[0][3]
+    # square5 = @play_board[0][5]
 
-    square1.peice = nil
+    # square1.peice = nil
+    # square4.peice = nil
+    # square5.peice = nil
 
-    knightbish1 = Rook.new("player2")
-    knightbish1.color = "black"
-    square2.peice = knightbish1
-    knightbish1.current_position = square2.co_ordinate
+    # knightbish1 = Rook.new("player2")
+    # knightbish1.color = "black"
+    # square2.peice = knightbish1
+    # knightbish1.current_position = square2.co_ordinate
+
+    # knightbish2 = Rook.new("player1")
+    # knightbish2.color = "white"
+    # square3.peice = knightbish2
+    # knightbish2.current_position = square2.co_ordinate
+
+    @play_board[1][4].piece = nil
+    @play_board[3][4].piece = nil
+    @play_board[1][3].piece = nil
+    @play_board[3][3].piece = nil
+
+    #try fools mate if check mate u got it
 
 
   end

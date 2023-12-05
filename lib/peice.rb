@@ -240,97 +240,97 @@ end
 
 end
 
-# class Bishop < Peice
+class Bishop < Peice
 
 
-#   def initialize(player)
-#     super
-#     @name = "Bishop"
+  def initialize(player)
+    super
+    @name = "Bishop"
 
-#   end
+  end
 
-#   def up
-#     index = @current_position.dup
-#     square = nil
+  def up
+    index = @current_position.dup
+    square = nil
 
-#     while true
-#       break if index[0] == 7
-#       index = index.map{|index| index + 1}
+    while true
+      break if index[0] == 7
+      index = index.map{|index| index + 1}
 
-#       square = return_square(index)
-#       @possible_moves << square
+      square = return_square(index)
+      @possible_moves << square
 
-#     end
-#   end
+    end
+  end
 
-#   def down
-#     index = @current_position.dup
-#     square = nil
+  def down
+    index = @current_position.dup
+    square = nil
 
-#     while true
-#       break if index[1] == 0
-#       index = index.map{|index| index - 1}
-#       square = return_square(index)
-#       @possible_moves << square
+    while true
+      break if index[1] == 0
+      index = index.map{|index| index - 1}
+      square = return_square(index)
+      @possible_moves << square
 
-#     end
-#   end
+    end
+  end
 
-#   def left()
-#     index = @current_position.dup
-#     square = nil
+  def left()
+    index = @current_position.dup
+    square = nil
 
-#     while true
-#       break if index[1] == 0
-#       index[0] = index[0] + 1
-#       index[1] = index[1] - 1
-#       break if index[0] == 8
-#       square = return_square(index)
-#       @possible_moves << square
+    while true
+      break if index[1] == 0
+      index[0] = index[0] + 1
+      index[1] = index[1] - 1
+      break if index[0] == 8
+      square = return_square(index)
+      @possible_moves << square
 
-#     end
-#   end
+    end
+  end
 
 
-#   def right()
-#     index = @current_position.dup
-#     square = nil
+  def right()
+    index = @current_position.dup
+    square = nil
 
-#     while true
-#       break if index[0] == 0
-#       index[1] = index[1] + 1
-#       index[0] = index[0] - 1
-#       square = return_square(index)
-#       @possible_moves << square
+    while true
+      break if index[0] == 0
+      index[1] = index[1] + 1
+      index[0] = index[0] - 1
+      square = return_square(index)
+      @possible_moves << square
 
-#     end
-#   end
+    end
+  end
 
-#   def create_moves()
-#     moves = @possible_moves.dup
+  def create_moves()
+    moves = @possible_moves.dup
 
-#     moves.each do |square|
-#       if square.peice.nil?
-#         @available_moves << square.name
-#       elsif !our_peice?(square.peice)
-#         @available_moves << square.name
-#         @can_capture << square
-#       end
-#     end
-#   end
+    moves.each do |square|
+      if square.peice.nil?
+        @available_moves << square.name
+      elsif !our_peice?(square.peice)
+        @available_moves << square.name
+        @can_capture << square
+      end
+    end
+  end
 
-#   def all_moves()
-#     @possible_moves = []
-#     @available_moves = []
-#     @can_capture = []
-#     up()
-#     down()
-#     left()
-#     right()
-#     create_moves()
-#   end
+  def all_moves()
+    @possible_moves = []
+    @available_moves = []
+    @can_capture = []
+    up()
+    down()
+    left()
+    right()
+    create_moves()
+  end
 
-# end
+end
 
 
 class Queen < Peice
@@ -347,14 +347,14 @@ class Queen < Peice
     @available_moves = []
     @can_capture = []
 
-    # @bishop = Bishop.new(@player)
-    # @bishop.current_position = @current_position
-    # @bishop.destination = @destination
-    # @bishop.board = @board
-    # @bishop.check_valid?
+    @bishop = Bishop.new(@player)
+    @bishop.current_position = @current_position
+    @bishop.destination = @destination
+    @bishop.board = @board
+    @bishop.check_valid?
 
-    # @available_moves << @bishop.available_moves
-    # @can_capture << @bishop.can_capture
+    @available_moves << @bishop.available_moves
+    @can_capture << @bishop.can_capture
 
 
     @rook.current_position = @current_position
@@ -378,6 +378,7 @@ class Queen < Peice
   def check_valid?
     @rook.destination = @destination
     @rook.check_valid?
+    
     create_moves()
     return true if @bishop.check_valid? || @rook.check_valid?
     false
