@@ -1,13 +1,18 @@
 require_relative 'lib/piece'
 require_relative 'lib/board'
+require 'yaml'
+require 'psych'
+
 
 
 
 class Player
-  attr_accessor :board
+  attr_accessor :name ,:captured,:color
 
-  def initialize(player,board)
-    @player = player
+  def initialize(player,color)
+    @name = player
+    @color = color
+    @captured = []
   end
 
 end
@@ -19,39 +24,75 @@ class Game
   def initialize(player1,player2)
     @board = Board.new(player1,player2)
     @play_board = @board.board
-    @find_co_ordinates = @board.hashy
-    @captured_pieces = []
-    @first_move = false
-    @player_turn = "black"
+    @find_co_ordinates = @board.hash
+    @first_move = true
+    @player1 = player1
+    @player2 = player2
+    @player_turn = player1
     @check = false
-    delete_this()
-
+    @checkmate = false
+    #delete_this()
+    print_board(@play_board)
 
 
   end
 
+
+
+  def print_board(board)
+
+    letters = ["a","b","c","d","e","f","g","h"]
+    print nil
+    for i in letters
+      print "  #{i}"
+    end
+    print nil
+    puts
+    x = 8
+    board.reverse.each do |arr|
+      print x
+      arr.each do |square|
+        print square.piece.nil? ? " _ " : " #{square.piece.symbol} "
+      end
+      print x
+      x -= 1
+      puts
+    end
+    print nil
+    for i in letters
+      print "  #{i}"
+    end
+    puts nil
+  end
+
   def call_turns
-    2.times do
+    while !@checkmate
       turn
     end
   end
 
-
-
   def turn
-    input = gets.chomp.split(",")
-    move_piece(input[0],input[1])
-
+    loop do
+      #begin
+        input = gets.chomp.strip.split(",")
+        break unless check_input?(input[0], input[1])
+        break p @hint unless move_piece(input[0], input[1])
+      #rescue => e
+      #  puts "Error: #{e.message}"
+      #end
+    end
   end
 
   def available_moves(start)
+
     start = start.split("?")[0]
     start_square = return_square(start)
     piece = start_square.piece
     piece.board = @play_board
     piece.all_moves
     available_moves = !piece.available_moves.nil? ? piece.available_moves.flatten.uniq : nil
-    return p available_moves
+    p available_moves
+
   end
 
   def check_input?(start,destination=nil)
@@ -64,30 +105,31 @@ class Game
     elsif !in_board?(start) || !in_board?(destination)
       puts "invalid move"
       return false
-    elsif return_square(start).nil?
-      puts "no piece at the square "
+    elsif return_square(start).piece.nil?
+      puts "no piece at the square"
       return false
     elsif @first_move && return_square(start).piece.color == "black"
       puts "white moves first"
       return false
-    elsif return_square(start).piece.color != @player_turn
-      puts "#{@player_turn}'s moves"
+    elsif return_square(start).piece.color != @player_turn.color
+      puts "#{@player_turn.name}'s move"
       return false
+    elsif return_square(destination).piece.name == "King"
+      puts "King cannot be caputred"
+      return false
+    else
+      @first_move = false
+      true
     end
-    @first_move = false
-    true
   end
 
 
   def still_check?()
 
-
-
-    opponent = @player_turn  == "white" ? "black" : "white"
-
+    opponent_color = @player_turn == @player1 ? @player2.color : @player1.color
     opponent_pieces = @play_board.flatten.find_all do |square|
       if !square.piece.nil?
-        square.piece.color == opponent
+        square.piece.color == opponent_color
       end
     end
 
@@ -104,44 +146,40 @@ class Game
   end
 
   def is_check?(destination)
-
-    start_square = return_square(destination)
-    piece = start_square.piece
+    piece = destination.piece
     piece.board = @play_board
     piece.all_moves
     piece.can_capture
     check = piece.can_capture.any?{|move| move.piece.name == "King"}
-    check
-
   end
 
-  def move_piece(start,destination=nil)
-
-    # while
-    #   turn
-    # end
-    return if !check_input?(start, destination)
+  def move_piece(start,destination)
 
     start_square = return_square(start)
     destination_square = return_square(destination)
     piece = start_square.piece
 
-
-
     piece.destination = @find_co_ordinates[destination]
     piece.board = @play_board
 
-    return puts"invalid move for the piece check" if !piece.check_valid?
+    @hint = "invalid move for the piece check"
 
+    return false  if !piece.check_valid?
     available_moves = piece.available_moves.flatten.uniq
 
-    return puts"invalid move for the piece" if !available_moves.include?(destination)
+    @hint = "invalid move for the piece"
 
-    #find a way to put all of this
+    return false if !available_moves.include?(destination)
 
-    if @check == true
-      return puts "still in check " if simulator_check(start_square,destination_square,piece)
+    @hint = "still in check"
 
+    return false if @check && simulator_check(start_square,destination_square,piece)
+
+    if !destination_square.piece.nil?
+        @captured = true
+        @player_turn.captured << destination_square.piece.symbol
+    else
+      @captured = false
     end
 
     destination_square.piece = piece
@@ -149,33 +187,43 @@ class Game
     destination_square.piece.current_position = destination_square.co_ordinate
 
 
+    @check = is_check?(destination_square)
 
-    @check = is_check?(destination_square.name)
-    p @check
-    #checking if checkmade
-    if @check
-
-      player_pieces = @play_board.flatten.find_all do |square|
-        if !square.piece.nil?
-          square.piece.color == @player
-        end
-      end
-
-      @checkmate = true
-      player_pieces.each do |square|
-        piece = square.piece
-        piece.board = @play_board
-        piece.all_moves.each do |destination|
-          @checkmate = simulator_check(square,square,return_square(destination),piece)
-          break if !@checkmate
-        end
-      end
-    end
-    p "check mate ? #{@checkmate}"
+    return p "check mate ? #{@checkmate}" if @check && is_checkmate?()
 
     puts "moved"
 
-    @player_turn = @player_turn  == "white" ? "black" : "white"
+    if !@captured
+        @player_turn = @player_turn  == @player1 ? @player2 : @player1
+    end
+    print "\r"
+    print_board(@play_board)
+
+    true
+
+    save()
+  end
+
+
+  def is_checkmate?()
+
+    player_pieces = @play_board.flatten.find_all do |square|
+      if !square.piece.nil?
+        square.piece.color == @player_turn.color
+      end
+    end
+
+    player_pieces.each do |square|
+      piece = square.piece
+      piece.board = @play_board
+      next if piece.all_moves.nil?
+      piece.all_moves.each do |destination|
+        @checkmate = simulator_check(square,return_square(destination),piece)
+        break if !@checkmate
+      end
+    end
+
+    @checkmate
 
   end
 
@@ -210,35 +258,29 @@ class Game
     @play_board[index[0]][index[1]]
 
   end
-
+  #/lib/save_games/
+  def save()
+    File.open('save.dump', 'w') { |f| f.write(YAML.dump(self)) }
+  end
 
   def delete_this()
-    # Assuming @play_board is a 2D array representing the chessboard
-
-    # Set up the initial board
 
     @play_board[1][5].piece = nil
     @play_board[1][6].piece = nil
     @play_board[6][4].piece = nil
 
 
-    # White moves
-    pawn1 = Pawn.new("player1")
-    pawn1.color = "white"
+    pawn1 = Pawn.new("player1","white")
+
     @play_board[3][5].piece = pawn1
     pawn1.current_position = @play_board[3][5].co_ordinate
 
-    # Black makes a mistake
-    pawn2 = Pawn.new("player1")
-    pawn2.color = "white"
+    pawn2 = Pawn.new("player1","white")
     @play_board[3][6].piece = pawn2
     pawn2.current_position = @play_board[3][6].co_ordinate
 
-    # White moves again
+    pawn3 = Pawn.new("player2","black")
 
-    # Black makes another mistake (Fool's Mate)
-    pawn3 = Pawn.new("player2")
-    pawn3.color = "black"
     @play_board[2][5].piece = pawn3
     pawn3.current_position = @play_board[2][5].co_ordinate
   end
@@ -262,11 +304,14 @@ class Game
 
 end
 
-
-game = Game.new("player1","player2")
+player1 = Player.new("Nuha","white")
+player2 = Player.new("Aanish","black")
+game = Game.new(player1,player2)
 game.call_turns
 
 
+# load = Psych.safe_load(File.read('save.dump'),permitted_classes: [Game,Board,Square,Piece,Player,Rook,Bishop,Knight,Pawn,Queen,King], aliases: true)
+# load.call_turns
 
 
 
