@@ -73,13 +73,13 @@ class Game
 
   def turn
     loop do
-      #begin
+      begin
         input = gets.chomp.strip.split(",")
         break unless check_input?(input[0], input[1])
         break p @hint unless move_piece(input[0], input[1])
-      #rescue => e
-      #  puts "Error: #{e.message}"
-      #end
+      rescue => e
+        puts "Error: #{e.message}"
+      end
     end
   end
 
@@ -114,7 +114,7 @@ class Game
     elsif return_square(start).piece.color != @player_turn.color
       puts "#{@player_turn.name}'s move"
       return false
-    elsif return_square(destination).piece.name == "King"
+    elsif !return_square(destination).piece.nil? && return_square(destination).piece.name == "King"
       puts "King cannot be caputred"
       return false
     else
@@ -159,6 +159,7 @@ class Game
     destination_square = return_square(destination)
     piece = start_square.piece
 
+
     piece.destination = @find_co_ordinates[destination]
     piece.board = @play_board
 
@@ -167,9 +168,14 @@ class Game
     return false  if !piece.check_valid?
     available_moves = piece.available_moves.flatten.uniq
 
+
     @hint = "invalid move for the piece"
 
     return false if !available_moves.include?(destination)
+
+    @hint =  "stale Mate"
+    return false if piece.name == "King" && !@check && stale_mate(piece,start_square)
+
 
     @hint = "still in check"
 
@@ -196,7 +202,6 @@ class Game
     if !@captured
         @player_turn = @player_turn  == @player1 ? @player2 : @player1
     end
-    print "\r"
     print_board(@play_board)
 
     true
@@ -204,6 +209,13 @@ class Game
     save()
   end
 
+  def stale_mate(piece,square)
+    piece.all_moves.each do |destination|
+      stale_mate = simulator_check(square,return_square(destination),piece)
+      break if !stale_mate
+    end
+    stale_mate
+  end
 
   def is_checkmate?()
 

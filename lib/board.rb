@@ -111,7 +111,6 @@ class Board
     square.piece = queen
     queen.current_position = square.co_ordinate
 
-
     square = @board[index1][4]
     king = King.new(@player,@color)
     square.piece = king
