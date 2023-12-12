@@ -50,7 +50,7 @@ class Rook < Piece
   def initialize(player,color)
     super
     @name = "Rook"
-    @symbol = @color == "white" ? "♖" : "♜"
+    @symbol = @color == "black" ? "♖" : "♜"
 
 
 end
@@ -180,7 +180,7 @@ class Knight < Piece
   def initialize(player,color)
     super
     name = "knight"
-    @symbol = @color == "white" ? "♘" : "♞"
+    @symbol = @color == "black" ? "♘" : "♞"
 
 
   end
@@ -264,7 +264,7 @@ class Bishop < Piece
   def initialize(player,color)
     super
    @name = "Bishop"
-   @symbol = @color == "white" ? "♗" : "♝"
+   @symbol = @color == "black" ? "♗" : "♝"
 
   end
 
@@ -388,7 +388,7 @@ class Queen < Piece
   def initialize(player,color)
     super
     name = "Queen"
-    @symbol = @color == "white" ? "♕" : "♛"
+    @symbol = @color == "black" ? "♕" : "♛"
 
     @rook = Rook.new(@player,@color)
     @bishop = Bishop.new(@player,@color)
@@ -454,7 +454,7 @@ class Pawn < Piece
   def initialize(player,color)
     super
     @name = "Pawn"
-    @symbol = @color == "white" ? "♙" : "♟"
+    @symbol = @color == "black" ? "♙" : "♟"
 
   end
 
@@ -477,9 +477,11 @@ class Pawn < Piece
     square = nil
     index[0] = @color == "white" ? index[0] + 1 : index[0] - 1
     square = return_square(index)
-    @available_moves << square.name
-    @available_moves_co << square.co_ordinate
-    # @possible_moves << square
+    if square.piece.nil?
+      @available_moves << square.name
+      @available_moves_co << square.co_ordinate
+    end
+      # @possible_moves << square
   end
 
 
@@ -527,7 +529,7 @@ class King < Piece
   def initialize(player,color)
     super
     @name = "King"
-    @symbol = @color == "white" ? "♔" : "♚"
+    @symbol = @color == "black" ? "♔" : "♚"
 
 
   end

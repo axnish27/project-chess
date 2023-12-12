@@ -2,6 +2,7 @@ require_relative 'lib/piece'
 require_relative 'lib/board'
 require 'yaml'
 require 'psych'
+require 'io/console'
 
 
 
@@ -20,7 +21,6 @@ end
 
 class Game
 
-
   def initialize(player1,player2)
     @board = Board.new(player1,player2)
     @play_board = @board.board
@@ -31,8 +31,10 @@ class Game
     @player_turn = player1
     @check = false
     @checkmate = false
-    #delete_this()
     print_board(@play_board)
+
+    #delete_this()
+
 
 
   end
@@ -74,11 +76,13 @@ class Game
   def turn
     loop do
       begin
+
         input = gets.chomp.strip.split(",")
         break unless check_input?(input[0], input[1])
         break p @hint unless move_piece(input[0], input[1])
       rescue => e
-        puts "Error: #{e.message}"
+       puts "Error: #{e.message}"
+        retry
       end
     end
   end
@@ -155,6 +159,7 @@ class Game
 
   def move_piece(start,destination)
 
+
     start_square = return_square(start)
     destination_square = return_square(destination)
     piece = start_square.piece
@@ -172,6 +177,7 @@ class Game
     @hint = "invalid move for the piece"
 
     return false if !available_moves.include?(destination)
+
 
     @hint =  "stale Mate"
     return false if piece.name == "King" && !@check && stale_mate(piece,start_square)
@@ -197,16 +203,50 @@ class Game
 
     return p "check mate ? #{@checkmate}" if @check && is_checkmate?()
 
-    puts "moved"
+    @pawn_promoted = false
+    if piece.name == "Pawn" && destination.split("")[1] == 1 || destination.split("")[1] == 8
+      destination_square.peice = pawn_promotion(destination_square)
+      @pawn_promoted = true
+    end
 
-    if !@captured
+    if !@captured || !@pawn_promoted
         @player_turn = @player_turn  == @player1 ? @player2 : @player1
     end
+
     print_board(@play_board)
+    save()
 
     true
+  end
 
-    save()
+
+  def pawn_promotion(square)
+    puts "Your Pawn can be promoted input the letter corresponding to the peice u want "
+    name = ["r - Rook","k - Knight","b - Bishop","q - Queen"]
+    puts name
+    piece_classes = {
+      'r' => Rook,
+      'k' => Knight,
+      'q' => Queen,
+      'b' => Bishop
+    }
+
+    begin
+      new_piece = gets.chomp
+      piece = piece_classes[new_piece]
+      if piece
+        piece_instance = piece.new(square.piece.player,square.piece.color)
+        piece_instance.current_position = square.co_ordinate
+        puts "You selected #{name.find { |s| s.downcase.start_with?(new_piece) }.split(" - ").last}"
+      else
+        puts "Invalid piece selection"
+      end
+    rescue => e
+      puts "Error: #{e.message}"
+      retry
+    end
+    piece_instance
+
   end
 
   def stale_mate(piece,square)
@@ -322,6 +362,7 @@ game = Game.new(player1,player2)
 game.call_turns
 
 
+#game.pawn_promotion(game.return_square("d8"))
 # load = Psych.safe_load(File.read('save.dump'),permitted_classes: [Game,Board,Square,Piece,Player,Rook,Bishop,Knight,Pawn,Queen,King], aliases: true)
 # load.call_turns
 
