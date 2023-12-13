@@ -13,8 +13,6 @@ end
 
 class Board
 
-
-
   attr_accessor :hash, :board
 
   def initialize(player1,player2)
@@ -127,6 +125,32 @@ class Board
       pawn.current_position = square.co_ordinate
 
     end
+  end
+
+
+  def display(board)
+    letters = ["a","b","c","d","e","f","g","h"]
+    print nil
+    for i in letters
+      print "  #{i}"
+    end
+    print nil
+    puts
+    x = 8
+    board.reverse.each do |arr|
+      print x
+      arr.each do |square|
+        print square.piece.nil? ? " _ " : " #{square.piece.symbol} "
+      end
+      print x
+      x -= 1
+      puts
+    end
+    print nil
+    for i in letters
+      print "  #{i}"
+    end
+    puts nil
   end
 
 

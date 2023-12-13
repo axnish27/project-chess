@@ -1,0 +1,885 @@
+--- !ruby/object:Game
+board: !ruby/object:Board
+  first: true
+  hash: &36
+    a1:
+    - 0
+    - 0
+    b1:
+    - 0
+    - 1
+    c1:
+    - 0
+    - 2
+    d1:
+    - 0
+    - 3
+    e1:
+    - 0
+    - 4
+    f1:
+    - 0
+    - 5
+    g1:
+    - 0
+    - 6
+    h1:
+    - 0
+    - 7
+    a2:
+    - 1
+    - 0
+    b2:
+    - 1
+    - 1
+    c2:
+    - 1
+    - 2
+    d2:
+    - 1
+    - 3
+    e2:
+    - 1
+    - 4
+    f2:
+    - 1
+    - 5
+    g2:
+    - 1
+    - 6
+    h2:
+    - 1
+    - 7
+    a3:
+    - 2
+    - 0
+    b3:
+    - 2
+    - 1
+    c3:
+    - 2
+    - 2
+    d3:
+    - 2
+    - 3
+    e3:
+    - 2
+    - 4
+    f3:
+    - 2
+    - 5
+    g3:
+    - 2
+    - 6
+    h3:
+    - 2
+    - 7
+    a4:
+    - 3
+    - 0
+    b4:
+    - 3
+    - 1
+    c4:
+    - 3
+    - 2
+    d4:
+    - 3
+    - 3
+    e4:
+    - 3
+    - 4
+    f4:
+    - 3
+    - 5
+    g4:
+    - 3
+    - 6
+    h4:
+    - 3
+    - 7
+    a5:
+    - 4
+    - 0
+    b5:
+    - 4
+    - 1
+    c5:
+    - 4
+    - 2
+    d5:
+    - 4
+    - 3
+    e5:
+    - 4
+    - 4
+    f5:
+    - 4
+    - 5
+    g5:
+    - 4
+    - 6
+    h5:
+    - 4
+    - 7
+    a6:
+    - 5
+    - 0
+    b6:
+    - 5
+    - 1
+    c6:
+    - 5
+    - 2
+    d6:
+    - 5
+    - 3
+    e6:
+    - 5
+    - 4
+    f6:
+    - 5
+    - 5
+    g6:
+    - 5
+    - 6
+    h6:
+    - 5
+    - 7
+    a7:
+    - 6
+    - 0
+    b7:
+    - 6
+    - 1
+    c7:
+    - 6
+    - 2
+    d7:
+    - 6
+    - 3
+    e7:
+    - 6
+    - 4
+    f7:
+    - 6
+    - 5
+    g7:
+    - 6
+    - 6
+    h7:
+    - 6
+    - 7
+    a8:
+    - 7
+    - 0
+    b8:
+    - 7
+    - 1
+    c8:
+    - 7
+    - 2
+    d8:
+    - 7
+    - 3
+    e8:
+    - 7
+    - 4
+    f8:
+    - 7
+    - 5
+    g8:
+    - 7
+    - 6
+    h8:
+    - 7
+    - 7
+  board: &35
+  - - !ruby/object:Square
+      name: a1
+      piece: !ruby/object:Rook
+        player: &2 !ruby/object:Player
+          name: Aanish
+          color: white
+          captured: []
+        current_position: &1
+        - 0
+        - 0
+        destination: 
+        board: 
+        color: white
+        available_moves_co: []
+        name: Rook
+        symbol: "♜"
+      co_ordinate: *1
+    - !ruby/object:Square
+      name: b1
+      piece: !ruby/object:Knight
+        player: *2
+        current_position: &3
+        - 0
+        - 1
+        destination: 
+        board: 
+        color: white
+        available_moves_co: []
+        symbol: "♞"
+      co_ordinate: *3
+    - !ruby/object:Square
+      name: c1
+      piece: !ruby/object:Bishop
+        player: *2
+        current_position: &4
+        - 0
+        - 2
+        destination: 
+        board: 
+        color: white
+        available_moves_co: []
+        name: Bishop
+        symbol: "♝"
+      co_ordinate: *4
+    - !ruby/object:Square
+      name: d1
+      piece: !ruby/object:Queen
+        player: *2
+        current_position: &5
+        - 0
+        - 3
+        destination: 
+        board: 
+        color: white
+        available_moves_co: []
+        symbol: "♛"
+        rook: !ruby/object:Rook
+          player: *2
+          current_position: 
+          destination: 
+          board: 
+          color: white
+          available_moves_co: []
+          name: Rook
+          symbol: "♜"
+        bishop: !ruby/object:Bishop
+          player: *2
+          current_position: 
+          destination: 
+          board: 
+          color: white
+          available_moves_co: []
+          name: Bishop
+          symbol: "♝"
+      co_ordinate: *5
+    - !ruby/object:Square
+      name: e1
+      piece: !ruby/object:King
+        player: *2
+        current_position: &6
+        - 0
+        - 4
+        destination: 
+        board: 
+        color: white
+        available_moves_co: []
+        name: King
+        symbol: "♚"
+      co_ordinate: *6
+    - !ruby/object:Square
+      name: f1
+      piece: !ruby/object:Bishop
+        player: *2
+        current_position: &7
+        - 0
+        - 5
+        destination: 
+        board: 
+        color: white
+        available_moves_co: []
+        name: Bishop
+        symbol: "♝"
+      co_ordinate: *7
+    - !ruby/object:Square
+      name: g1
+      piece: !ruby/object:Knight
+        player: *2
+        current_position: &8
+        - 0
+        - 6
+        destination: 
+        board: 
+        color: white
+        available_moves_co: []
+        symbol: "♞"
+      co_ordinate: *8
+    - !ruby/object:Square
+      name: h1
+      piece: !ruby/object:Rook
+        player: *2
+        current_position: &9
+        - 0
+        - 7
+        destination: 
+        board: 
+        color: white
+        available_moves_co: []
+        name: Rook
+        symbol: "♜"
+      co_ordinate: *9
+  - - !ruby/object:Square
+      name: a2
+      piece: !ruby/object:Pawn
+        player: *2
+        current_position: &10
+        - 1
+        - 0
+        destination: 
+        board: 
+        color: white
+        available_moves_co: []
+        name: Pawn
+        symbol: "♟"
+      co_ordinate: *10
+    - !ruby/object:Square
+      name: b2
+      piece: !ruby/object:Pawn
+        player: *2
+        current_position: &11
+        - 1
+        - 1
+        destination: 
+        board: 
+        color: white
+        available_moves_co: []
+        name: Pawn
+        symbol: "♟"
+      co_ordinate: *11
+    - !ruby/object:Square
+      name: c2
+      piece: !ruby/object:Pawn
+        player: *2
+        current_position: &12
+        - 1
+        - 2
+        destination: 
+        board: 
+        color: white
+        available_moves_co: []
+        name: Pawn
+        symbol: "♟"
+      co_ordinate: *12
+    - !ruby/object:Square
+      name: d2
+      piece: !ruby/object:Pawn
+        player: *2
+        current_position: &13
+        - 1
+        - 3
+        destination: 
+        board: 
+        color: white
+        available_moves_co: []
+        name: Pawn
+        symbol: "♟"
+      co_ordinate: *13
+    - !ruby/object:Square
+      name: e2
+      piece: !ruby/object:Pawn
+        player: *2
+        current_position: &14
+        - 1
+        - 4
+        destination: 
+        board: 
+        color: white
+        available_moves_co: []
+        name: Pawn
+        symbol: "♟"
+      co_ordinate: *14
+    - !ruby/object:Square
+      name: f2
+      piece: !ruby/object:Pawn
+        player: *2
+        current_position: &15
+        - 1
+        - 5
+        destination: 
+        board: 
+        color: white
+        available_moves_co: []
+        name: Pawn
+        symbol: "♟"
+      co_ordinate: *15
+    - !ruby/object:Square
+      name: g2
+      piece: !ruby/object:Pawn
+        player: *2
+        current_position: &16
+        - 1
+        - 6
+        destination: 
+        board: 
+        color: white
+        available_moves_co: []
+        name: Pawn
+        symbol: "♟"
+      co_ordinate: *16
+    - !ruby/object:Square
+      name: h2
+      piece: !ruby/object:Pawn
+        player: *2
+        current_position: &17
+        - 1
+        - 7
+        destination: 
+        board: 
+        color: white
+        available_moves_co: []
+        name: Pawn
+        symbol: "♟"
+      co_ordinate: *17
+  - - !ruby/object:Square
+      name: a3
+      piece: 
+      co_ordinate:
+      - 2
+      - 0
+    - !ruby/object:Square
+      name: b3
+      piece: 
+      co_ordinate:
+      - 2
+      - 1
+    - !ruby/object:Square
+      name: c3
+      piece: 
+      co_ordinate:
+      - 2
+      - 2
+    - !ruby/object:Square
+      name: d3
+      piece: 
+      co_ordinate:
+      - 2
+      - 3
+    - !ruby/object:Square
+      name: e3
+      piece: 
+      co_ordinate:
+      - 2
+      - 4
+    - !ruby/object:Square
+      name: f3
+      piece: 
+      co_ordinate:
+      - 2
+      - 5
+    - !ruby/object:Square
+      name: g3
+      piece: 
+      co_ordinate:
+      - 2
+      - 6
+    - !ruby/object:Square
+      name: h3
+      piece: 
+      co_ordinate:
+      - 2
+      - 7
+  - - !ruby/object:Square
+      name: a4
+      piece: 
+      co_ordinate:
+      - 3
+      - 0
+    - !ruby/object:Square
+      name: b4
+      piece: 
+      co_ordinate:
+      - 3
+      - 1
+    - !ruby/object:Square
+      name: c4
+      piece: 
+      co_ordinate:
+      - 3
+      - 2
+    - !ruby/object:Square
+      name: d4
+      piece: 
+      co_ordinate:
+      - 3
+      - 3
+    - !ruby/object:Square
+      name: e4
+      piece: 
+      co_ordinate:
+      - 3
+      - 4
+    - !ruby/object:Square
+      name: f4
+      piece: 
+      co_ordinate:
+      - 3
+      - 5
+    - !ruby/object:Square
+      name: g4
+      piece: 
+      co_ordinate:
+      - 3
+      - 6
+    - !ruby/object:Square
+      name: h4
+      piece: 
+      co_ordinate:
+      - 3
+      - 7
+  - - !ruby/object:Square
+      name: a5
+      piece: 
+      co_ordinate:
+      - 4
+      - 0
+    - !ruby/object:Square
+      name: b5
+      piece: 
+      co_ordinate:
+      - 4
+      - 1
+    - !ruby/object:Square
+      name: c5
+      piece: 
+      co_ordinate:
+      - 4
+      - 2
+    - !ruby/object:Square
+      name: d5
+      piece: 
+      co_ordinate:
+      - 4
+      - 3
+    - !ruby/object:Square
+      name: e5
+      piece: 
+      co_ordinate:
+      - 4
+      - 4
+    - !ruby/object:Square
+      name: f5
+      piece: 
+      co_ordinate:
+      - 4
+      - 5
+    - !ruby/object:Square
+      name: g5
+      piece: 
+      co_ordinate:
+      - 4
+      - 6
+    - !ruby/object:Square
+      name: h5
+      piece: 
+      co_ordinate:
+      - 4
+      - 7
+  - - !ruby/object:Square
+      name: a6
+      piece: 
+      co_ordinate:
+      - 5
+      - 0
+    - !ruby/object:Square
+      name: b6
+      piece: 
+      co_ordinate:
+      - 5
+      - 1
+    - !ruby/object:Square
+      name: c6
+      piece: 
+      co_ordinate:
+      - 5
+      - 2
+    - !ruby/object:Square
+      name: d6
+      piece: 
+      co_ordinate:
+      - 5
+      - 3
+    - !ruby/object:Square
+      name: e6
+      piece: 
+      co_ordinate:
+      - 5
+      - 4
+    - !ruby/object:Square
+      name: f6
+      piece: 
+      co_ordinate:
+      - 5
+      - 5
+    - !ruby/object:Square
+      name: g6
+      piece: 
+      co_ordinate:
+      - 5
+      - 6
+    - !ruby/object:Square
+      name: h6
+      piece: 
+      co_ordinate:
+      - 5
+      - 7
+  - - !ruby/object:Square
+      name: a7
+      piece: !ruby/object:Pawn
+        player: &19 !ruby/object:Player
+          name: Nuha
+          color: black
+          captured: []
+        current_position: &18
+        - 6
+        - 0
+        destination: 
+        board: 
+        color: black
+        available_moves_co: []
+        name: Pawn
+        symbol: "♙"
+      co_ordinate: *18
+    - !ruby/object:Square
+      name: b7
+      piece: !ruby/object:Pawn
+        player: *19
+        current_position: &20
+        - 6
+        - 1
+        destination: 
+        board: 
+        color: black
+        available_moves_co: []
+        name: Pawn
+        symbol: "♙"
+      co_ordinate: *20
+    - !ruby/object:Square
+      name: c7
+      piece: !ruby/object:Pawn
+        player: *19
+        current_position: &21
+        - 6
+        - 2
+        destination: 
+        board: 
+        color: black
+        available_moves_co: []
+        name: Pawn
+        symbol: "♙"
+      co_ordinate: *21
+    - !ruby/object:Square
+      name: d7
+      piece: !ruby/object:Pawn
+        player: *19
+        current_position: &22
+        - 6
+        - 3
+        destination: 
+        board: 
+        color: black
+        available_moves_co: []
+        name: Pawn
+        symbol: "♙"
+      co_ordinate: *22
+    - !ruby/object:Square
+      name: e7
+      piece: !ruby/object:Pawn
+        player: *19
+        current_position: &23
+        - 6
+        - 4
+        destination: 
+        board: 
+        color: black
+        available_moves_co: []
+        name: Pawn
+        symbol: "♙"
+      co_ordinate: *23
+    - !ruby/object:Square
+      name: f7
+      piece: !ruby/object:Pawn
+        player: *19
+        current_position: &24
+        - 6
+        - 5
+        destination: 
+        board: 
+        color: black
+        available_moves_co: []
+        name: Pawn
+        symbol: "♙"
+      co_ordinate: *24
+    - !ruby/object:Square
+      name: g7
+      piece: !ruby/object:Pawn
+        player: *19
+        current_position: &25
+        - 6
+        - 6
+        destination: 
+        board: 
+        color: black
+        available_moves_co: []
+        name: Pawn
+        symbol: "♙"
+      co_ordinate: *25
+    - !ruby/object:Square
+      name: h7
+      piece: !ruby/object:Pawn
+        player: *19
+        current_position: &26
+        - 6
+        - 7
+        destination: 
+        board: 
+        color: black
+        available_moves_co: []
+        name: Pawn
+        symbol: "♙"
+      co_ordinate: *26
+  - - !ruby/object:Square
+      name: a8
+      piece: !ruby/object:Rook
+        player: *19
+        current_position: &27
+        - 7
+        - 0
+        destination: 
+        board: 
+        color: black
+        available_moves_co: []
+        name: Rook
+        symbol: "♖"
+      co_ordinate: *27
+    - !ruby/object:Square
+      name: b8
+      piece: !ruby/object:Knight
+        player: *19
+        current_position: &28
+        - 7
+        - 1
+        destination: 
+        board: 
+        color: black
+        available_moves_co: []
+        symbol: "♘"
+      co_ordinate: *28
+    - !ruby/object:Square
+      name: c8
+      piece: !ruby/object:Bishop
+        player: *19
+        current_position: &29
+        - 7
+        - 2
+        destination: 
+        board: 
+        color: black
+        available_moves_co: []
+        name: Bishop
+        symbol: "♗"
+      co_ordinate: *29
+    - !ruby/object:Square
+      name: d8
+      piece: !ruby/object:Queen
+        player: *19
+        current_position: &30
+        - 7
+        - 3
+        destination: 
+        board: 
+        color: black
+        available_moves_co: []
+        symbol: "♕"
+        rook: !ruby/object:Rook
+          player: *19
+          current_position: 
+          destination: 
+          board: 
+          color: black
+          available_moves_co: []
+          name: Rook
+          symbol: "♖"
+        bishop: !ruby/object:Bishop
+          player: *19
+          current_position: 
+          destination: 
+          board: 
+          color: black
+          available_moves_co: []
+          name: Bishop
+          symbol: "♗"
+      co_ordinate: *30
+    - !ruby/object:Square
+      name: e8
+      piece: !ruby/object:King
+        player: *19
+        current_position: &31
+        - 7
+        - 4
+        destination: 
+        board: 
+        color: black
+        available_moves_co: []
+        name: King
+        symbol: "♔"
+      co_ordinate: *31
+    - !ruby/object:Square
+      name: f8
+      piece: !ruby/object:Bishop
+        player: *19
+        current_position: &32
+        - 7
+        - 5
+        destination: 
+        board: 
+        color: black
+        available_moves_co: []
+        name: Bishop
+        symbol: "♗"
+      co_ordinate: *32
+    - !ruby/object:Square
+      name: g8
+      piece: !ruby/object:Knight
+        player: *19
+        current_position: &33
+        - 7
+        - 6
+        destination: 
+        board: 
+        color: black
+        available_moves_co: []
+        symbol: "♘"
+      co_ordinate: *33
+    - !ruby/object:Square
+      name: h8
+      piece: !ruby/object:Rook
+        player: *19
+        current_position: &34
+        - 7
+        - 7
+        destination: 
+        board: 
+        color: black
+        available_moves_co: []
+        name: Rook
+        symbol: "♖"
+      co_ordinate: *34
+  player1: *2
+  player2: *19
+  player: *19
+  color: black
+play_board: *35
+find_co_ordinates: *36
+first_move: true
+player1: *2
+player2: *19
+player_turn: *2
+check: false
+checkmate: false
